@@ -3,13 +3,13 @@ package ru.geekbrains.java3.lesson1.Task3;
 @SuppressWarnings("WeakerAccess")
 abstract class Fruit {
 
-    private float WEIGHT;
+    private float weight;
 
     public float getWeight() {
-        return WEIGHT;
+        return weight;
     }
 
-    public void setWEIGHT(float WEIGHT) {
-        this.WEIGHT = WEIGHT;
+    public void setWeight(float weight) {
+        this.weight = weight;
     }
 }
