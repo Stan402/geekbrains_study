@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.*;
 
+@SuppressWarnings("WeakerAccess")
 public class Homework {
 
     private static Connection connection;
@@ -72,7 +73,6 @@ public class Homework {
     }
 
     static void setPrice(String[] tokens) throws SQLException {
-        System.out.println("Получен запрос на смену цены " + tokens[1] + " " + tokens[2]);
         if (tokens.length != 3) {
             System.out.println("Получен некорректный запрос на смену цены. Неправильное число параметров");
             return;
@@ -83,12 +83,24 @@ public class Homework {
             System.out.println("Установлена новая цена для " + check + " товаров.");
         }catch (NumberFormatException e){
             System.out.println("Получен некорректный запрос на смену цены. Цена должна быть целым числом!");
-            return;
         }
     }
 
-    static void getListOfGoods(String[] tokens){
-        System.out.println("Получен запрос на список " + tokens[1] + " " + tokens[2] + " " + tokens[3]);
+    static void getListOfGoods(String[] tokens) throws SQLException {
+        if (tokens.length != 3) {
+            System.out.println("Получен некорректный запрос на вывод. Неправильное число параметров");
+            return;
+        }
+        try{
+            int minPrice = Integer.parseInt(tokens[1]);
+            int maxPrice = Integer.parseInt(tokens[2]);
+            ResultSet rs = statement.executeQuery("SELECT * FROM Goods WHERE cost >=" + minPrice + " AND cost <= " + maxPrice);
+            while (rs.next()){
+                System.out.println(rs.getString("prodid") + " " + rs.getString("title") + " " + rs.getInt("cost"));
+            }
+        }catch (NumberFormatException e){
+            System.out.println("Получен некорректный запрос на смену цены. Цена должна быть целым числом!");
+        }
     }
 
     private static void initDB(){
