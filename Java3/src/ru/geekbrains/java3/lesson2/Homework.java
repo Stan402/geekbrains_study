@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.*;
 
+@SuppressWarnings("WeakerAccess")
 public class Homework {
 
     private static Connection connection;
@@ -36,26 +37,26 @@ public class Homework {
                 System.out.println();
                 System.out.println("Пожалуйста введите команду");
 
-                    String text = reader.readLine();
-                    String[] tokens = text.split(" ");
-                    switch (tokens[0]) {
-                        case PRICE_QUERY:
-                            getPrice(tokens);
-                            break;
-                        case PRICE_SET_QUERY:
-                            setPrice(tokens);
-                            break;
-                        case GOODS_LIST_QUERY:
-                            getListOfGoods(tokens);
-                            break;
-                        case EXIT_QUERY:
-                            isExit = true;
-                            break;
-                        default:
-                            System.out.println("Введена некорректная команда. Попробуйте еще раз!");
-                    }
+                String text = reader.readLine();
+                String[] tokens = text.split(" ");
+                switch (tokens[0]) {
+                    case PRICE_QUERY:
+                        getPrice(tokens);
+                        break;
+                    case PRICE_SET_QUERY:
+                        setPrice(tokens);
+                        break;
+                    case GOODS_LIST_QUERY:
+                        getListOfGoods(tokens);
+                        break;
+                    case EXIT_QUERY:
+                        isExit = true;
+                        break;
+                    default:
+                        System.out.println("Введена некорректная команда. Попробуйте еще раз!");
+                }
             }
-        } catch (SQLException | IOException e){
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
         disconnect();
@@ -72,26 +73,39 @@ public class Homework {
     }
 
     static void setPrice(String[] tokens) throws SQLException {
-        System.out.println("Получен запрос на смену цены " + tokens[1] + " " + tokens[2]);
         if (tokens.length != 3) {
             System.out.println("Получен некорректный запрос на смену цены. Неправильное число параметров");
             return;
         }
-        try{
+        try {
             int price = Integer.parseInt(tokens[2]);
-            int check = statement.executeUpdate("UPDATE Goods SET cost = " + price + " WHERE title = '" + tokens[1] + "'");
+            int check = statement.executeUpdate("UPDATE Goods SET cost = " + price
+                                                 + " WHERE title = '" + tokens[1] + "'");
             System.out.println("Установлена новая цена для " + check + " товаров.");
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             System.out.println("Получен некорректный запрос на смену цены. Цена должна быть целым числом!");
-            return;
         }
     }
 
-    static void getListOfGoods(String[] tokens){
-        System.out.println("Получен запрос на список " + tokens[1] + " " + tokens[2] + " " + tokens[3]);
+    static void getListOfGoods(String[] tokens) throws SQLException {
+        if (tokens.length != 3) {
+            System.out.println("Получен некорректный запрос на вывод. Неправильное число параметров");
+            return;
+        }
+        try{
+            int minPrice = Integer.parseInt(tokens[1]);
+            int maxPrice = Integer.parseInt(tokens[2]);
+            ResultSet rs = statement.executeQuery("SELECT * FROM Goods WHERE cost >=" + minPrice
+                                                    + " AND cost <= " + maxPrice);
+            while (rs.next()){
+                System.out.println(rs.getString("prodid") + " " + rs.getString("title") + " " + rs.getInt("cost"));
+            }
+        }catch (NumberFormatException e){
+            System.out.println("Получен некорректный запрос на смену цены. Цена должна быть целым числом!");
+        }
     }
 
-    private static void initDB(){
+    private static void initDB() {
         connect();
         try {
             statement = connection.createStatement();
@@ -106,7 +120,7 @@ public class Homework {
             connection.setAutoCommit(false);
             int countTo = DBSIZE + 1;
             for (int i = 1; i < countTo; i++) {
-                prStmt.setString(1,"id_товара " + i);
+                prStmt.setString(1, "id_товара " + i);
                 prStmt.setString(2, "товар" + i);
                 prStmt.setInt(3, i * 10);
                 prStmt.addBatch();
@@ -116,12 +130,10 @@ public class Homework {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
         disconnect();
     }
 
-    public static void connect(){
+    public static void connect() {
         try {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:Lesson2hw.db");
@@ -129,7 +141,8 @@ public class Homework {
             e.printStackTrace();
         }
     }
-    public static void disconnect(){
+
+    public static void disconnect() {
         try {
             connection.close();
         } catch (SQLException e) {
