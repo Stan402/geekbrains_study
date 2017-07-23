@@ -19,6 +19,9 @@ public class Homework {
     private static final String GOODS_LIST_QUERY = "/товарыпоцене";
     private static final String EXIT_QUERY = "/выход";
 
+    private static PreparedStatement psGetPrice;
+    private static PreparedStatement psSetPrice;
+    private static PreparedStatement psGetList;
 
     public static void main(String[] args) {
         initDB();
@@ -26,6 +29,9 @@ public class Homework {
         connect();
         try {
             statement = connection.createStatement();
+            psGetPrice = connection.prepareStatement("SELECT * FROM Goods WHERE title = ?");
+            psSetPrice = connection.prepareStatement("UPDATE Goods SET cost = ? WHERE title = ?");
+            psGetList = connection.prepareStatement("SELECT * FROM Goods WHERE cost >= ? AND cost <= ?");
             while (!isExit) {
                 System.out.println();
                 System.out.println("*******Консольное приложение по работе с тестовой базой данных*******");
@@ -58,8 +64,14 @@ public class Homework {
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        } finally {
+            disconnect();
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        disconnect();
     }
 
     static void getPrice(String[] tokens) throws SQLException {
@@ -67,7 +79,8 @@ public class Homework {
             System.out.println("Получен некорректный запрос цены: уточните наименование товара...");
             return;
         }
-        ResultSet rs = statement.executeQuery("SELECT * FROM Goods WHERE title = '" + tokens[1] + "'");
+        psGetPrice.setString(1, tokens[1]);
+        ResultSet rs = psGetPrice.executeQuery();
         if(rs.next()) System.out.println(rs.getInt("cost"));
         else System.out.println("Такого товара нет: " + tokens[1]);
     }
@@ -79,8 +92,9 @@ public class Homework {
         }
         try {
             int price = Integer.parseInt(tokens[2]);
-            int check = statement.executeUpdate("UPDATE Goods SET cost = " + price
-                                                 + " WHERE title = '" + tokens[1] + "'");
+            psSetPrice.setInt(1, price);
+            psSetPrice.setString(2, tokens[1]);
+            int check = psSetPrice.executeUpdate();
             System.out.println("Установлена новая цена для " + check + " товаров.");
         } catch (NumberFormatException e) {
             System.out.println("Получен некорректный запрос на смену цены. Цена должна быть целым числом!");
@@ -95,8 +109,9 @@ public class Homework {
         try{
             int minPrice = Integer.parseInt(tokens[1]);
             int maxPrice = Integer.parseInt(tokens[2]);
-            ResultSet rs = statement.executeQuery("SELECT * FROM Goods WHERE cost >=" + minPrice
-                                                    + " AND cost <= " + maxPrice);
+            psGetList.setInt(1, minPrice);
+            psGetList.setInt(2, maxPrice);
+            ResultSet rs = psGetList.executeQuery();
             while (rs.next()){
                 System.out.println(rs.getString("prodid") + " " + rs.getString("title") + " " + rs.getInt("cost"));
             }
