@@ -3,16 +3,70 @@ package ru.geekbrains.java3.big_test;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class DataBaseManager {
 
     private String path;
     private Connection connection;
     private Statement statement;
-    private PreparedStatement psInit;
+    private static final String prepDelete = "DELETE FROM Organogram WHERE DepCode = ? AND DepJob = ?";
+    private static final String prepInsert = "INSERT INTO Organogram (DepCode, DepJob, Description) VALUES(?, ?, ?)";
+    private static final String prepUpdate = "UPDATE Organogram SET Description = ? WHERE DepCode = ? AND DepJob = ?";
 
     DataBaseManager(String path){
         this.path = path;
+    }
+
+    void updateDB(Set<NaturalKey> toDelete, Map<NaturalKey, String> toAdd, Map<NaturalKey, String> toUpdate){
+        connect();
+        int a = 0, b = 0, c = 0;
+        try {
+            connection.setAutoCommit(false);
+            Savepoint svpt1 = connection.setSavepoint();
+
+        if (toDelete != null){
+            PreparedStatement psDel = connection.prepareStatement(prepDelete);
+            for (NaturalKey key: toDelete) {
+                psDel.setString(1, key.getDepCode());
+                psDel.setString(2, key.getDepJob());
+                psDel.addBatch();
+            }
+            psDel.executeBatch();
+            a = toDelete.size();
+        }
+        if(toAdd != null){
+            PreparedStatement psAdd = connection.prepareStatement(prepInsert);
+            for (Map.Entry<NaturalKey, String> entry: toAdd.entrySet()) {
+                psAdd.setString(1, entry.getKey().getDepCode());
+                psAdd.setString(2, entry.getKey().getDepJob());
+                psAdd.setString(3, entry.getValue());
+                psAdd.addBatch();
+            }
+            psAdd.executeBatch();
+            b = toAdd.size();
+        }
+        if(toUpdate != null){
+            PreparedStatement psUpdate = connection.prepareStatement(prepUpdate);
+            for (Map.Entry<NaturalKey, String> entry: toUpdate.entrySet()) {
+                psUpdate.setString(1, entry.getValue());
+                psUpdate.setString(2, entry.getKey().getDepCode());
+                psUpdate.setString(3, entry.getKey().getDepJob());
+                psUpdate.addBatch();
+            }
+            psUpdate.executeBatch();
+            c = toUpdate.size();
+        }
+        connection.setAutoCommit(true);
+            System.out.println("удалено: " + a + "added: " + b + "updated: " + c);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+        disconnect();
     }
 
     void initDB() {
@@ -26,7 +80,7 @@ public class DataBaseManager {
                     "    Description   TEXT\n" +
                     ");\n");
             statement.execute("DELETE FROM Organogram");
-            psInit = connection.prepareStatement("INSERT INTO Organogram (DepCode, DepJob, Description) VALUES(?, ?, ?)");
+            PreparedStatement psInit = connection.prepareStatement(prepInsert);
             connection.setAutoCommit(false);
             int countTo = 100;
             for (int i = 1; i < countTo; i++) {
@@ -56,7 +110,6 @@ public class DataBaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         disconnect();
         return result;
     }
