@@ -13,7 +13,7 @@ public class Task2 {
             Thread t1 = new Thread(() -> {
                 for (int i = 0; i < 10; i++) {
                     try {
-                        writer.write("Thread1 wrote" + i +"\r\n");
+                        writer.write(String.format("Thread1 wrote %d \r\n", i));
                         Thread.sleep(20);
                     } catch (InterruptedException | IOException e) {
                         e.printStackTrace();
@@ -23,7 +23,7 @@ public class Task2 {
             Thread t2 = new Thread(() -> {
                 for (int i = 0; i < 10; i++) {
                     try {
-                        writer.write("Thread2 wrote" + i + "\r\n");
+                        writer.write(String.format("Thread2 wrote %d \r\n", i));
                         Thread.sleep(20);
                     } catch (InterruptedException | IOException e) {
                         e.printStackTrace();
@@ -33,7 +33,7 @@ public class Task2 {
             Thread t3 = new Thread(() -> {
                 for (int i = 0; i < 10; i++) {
                     try {
-                        writer.write("Thread3 wrote" + i + "\r\n");
+                        writer.write(String.format("Thread3 wrote %d \r\n", i));
                         Thread.sleep(20);
                     } catch (InterruptedException | IOException e) {
                         e.printStackTrace();

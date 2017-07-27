@@ -1,30 +1,30 @@
-Thread1 wrote0
-Thread3 wrote0
-Thread2 wrote0
-Thread1 wrote1
-Thread3 wrote1
-Thread2 wrote1
-Thread1 wrote2
-Thread3 wrote2
-Thread2 wrote2
-Thread1 wrote3
-Thread2 wrote3
-Thread3 wrote3
-Thread1 wrote4
-Thread3 wrote4
-Thread2 wrote4
-Thread2 wrote5
-Thread1 wrote5
-Thread3 wrote5
-Thread1 wrote6
-Thread3 wrote6
-Thread2 wrote6
-Thread1 wrote7
-Thread2 wrote7
-Thread3 wrote7
-Thread1 wrote8
-Thread2 wrote8
-Thread3 wrote8
-Thread1 wrote9
-Thread2 wrote9
-Thread3 wrote9
+Thread1 wrote 0 
+Thread2 wrote 0 
+Thread3 wrote 0 
+Thread3 wrote 1 
+Thread2 wrote 1 
+Thread1 wrote 1 
+Thread1 wrote 2 
+Thread3 wrote 2 
+Thread2 wrote 2 
+Thread3 wrote 3 
+Thread1 wrote 3 
+Thread2 wrote 3 
+Thread2 wrote 4 
+Thread1 wrote 4 
+Thread3 wrote 4 
+Thread2 wrote 5 
+Thread3 wrote 5 
+Thread1 wrote 5 
+Thread3 wrote 6 
+Thread1 wrote 6 
+Thread2 wrote 6 
+Thread3 wrote 7 
+Thread2 wrote 7 
+Thread1 wrote 7 
+Thread2 wrote 8 
+Thread3 wrote 8 
+Thread1 wrote 8 
+Thread3 wrote 9 
+Thread2 wrote 9 
+Thread1 wrote 9 
