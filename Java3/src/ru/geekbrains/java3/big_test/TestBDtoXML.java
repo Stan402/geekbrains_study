@@ -16,52 +16,74 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 public class TestBDtoXML {
 
     private static DataBaseManager dataBaseManager;
     private static Map<NaturalKey, String> data;
-    private static String fileName = "test.xml";
-    private static String syncFile = "test1.xml";
+
+    private static final String PROPERTIES_PATH = "testConfig.properties";
+    private static final String SAVE_COMMAND = "save";
+    private static final String SYNC_COMMAND = "sync";
+
+    private static String dbPath;
+    private static String logPath;
 
 
     public static void main(String[] args) {
-        String dbpath = "BigTestSQL.db";
 
-        dataBaseManager = new DataBaseManager(dbpath);
+        loadProperties();
+
+        dataBaseManager = new DataBaseManager(dbPath);
         data = dataBaseManager.loadDB();
-//        for (Map.Entry<NaturalKey, String> entry: data.entrySet()) {
-//            System.out.println(entry.getKey()+" " + entry.getValue());
-//        }
-        File file = new File(fileName);
+
+        if (args.length < 2) {
+            System.out.println("Вы забыли задать параметры для программы. Попробуйте еще раз!");
+            System.exit(0);
+        }
+        switch (args[0]){
+            case SAVE_COMMAND:
+                File file = new File(args[1]);
         try {
             file.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        try {
-//            writeDataToXML(file);
-//        } catch (ParserConfigurationException | SAXException | IOException e) {
-//            e.printStackTrace();
-//        }
-        File sfile = new File(syncFile);
+        try {
+            writeDataToXML(file);
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            e.printStackTrace();
+        }
+        break;
+            case SYNC_COMMAND:
+        File sfile = new File(args[1]);
         try {
             Map<NaturalKey, String> dataFromFile = parceXML(sfile);
             syncData(dataFromFile);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
+        } catch (ParserConfigurationException | IOException | SAXException e) {
             e.printStackTrace();
         }
+        break;
+        default:
+            System.out.println("Передана некорректная команда");
+        }
+//        for (Map.Entry<NaturalKey, String> entry: data.entrySet()) {
+//            System.out.println(entry.getKey()+" " + entry.getValue());
+//        }
+
+//        File sfile = new File(syncFile);
+//        try {
+//            Map<NaturalKey, String> dataFromFile = parceXML(sfile);
+//            syncData(dataFromFile);
+//        } catch (ParserConfigurationException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (SAXException e) {
+//            e.printStackTrace();
+//        }
 
 
         //testBDtoXML.dataBaseManager.initDB();
@@ -116,7 +138,7 @@ public class TestBDtoXML {
         for (Map.Entry<NaturalKey, String> entry: data.entrySet()) {
             addNewEntry(document, entry);
         }
-        writeDocument(document);
+        writeDocument(document, file);
     }
 
     private static void addNewEntry(Document document, Map.Entry<NaturalKey, String> entry){
@@ -134,11 +156,11 @@ public class TestBDtoXML {
         root.appendChild(line);
     }
 
-    private static void writeDocument(Document document)  {
+    private static void writeDocument(Document document, File file)  {
         try {
             Transformer tr = TransformerFactory.newInstance().newTransformer();
             DOMSource source = new DOMSource(document);
-            FileOutputStream fos = new FileOutputStream(fileName);
+            FileOutputStream fos = new FileOutputStream(file);
             StreamResult result = new StreamResult(fos);
             tr.transform(source, result);
             fos.close();
@@ -147,5 +169,23 @@ public class TestBDtoXML {
         }
 
 
+    }
+
+    private static void loadProperties(){
+        FileInputStream fis;
+        Properties properties = new Properties();
+
+        try {
+            fis = new FileInputStream(PROPERTIES_PATH);
+            properties.load(fis);
+
+            dbPath = properties.getProperty("DBpath");
+            logPath = properties.getProperty("logFile");
+
+            fis.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
