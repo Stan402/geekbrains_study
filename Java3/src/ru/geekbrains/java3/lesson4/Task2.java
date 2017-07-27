@@ -12,30 +12,30 @@ public class Task2 {
             writer = new BufferedWriter(new FileWriter("task2.txt"));
             Thread t1 = new Thread(() -> {
                 for (int i = 0; i < 10; i++) {
-                    writeLine("Thread1 wrote" + i);
                     try {
+                        writer.write("Thread1 wrote" + i +"\r\n");
                         Thread.sleep(20);
-                    } catch (InterruptedException e) {
+                    } catch (InterruptedException | IOException e) {
                         e.printStackTrace();
                     }
                 }
             });
             Thread t2 = new Thread(() -> {
                 for (int i = 0; i < 10; i++) {
-                    writeLine("Thread2 wrote" + i);
                     try {
+                        writer.write("Thread2 wrote" + i + "\r\n");
                         Thread.sleep(20);
-                    } catch (InterruptedException e) {
+                    } catch (InterruptedException | IOException e) {
                         e.printStackTrace();
                     }
                 }
             });
             Thread t3 = new Thread(() -> {
                 for (int i = 0; i < 10; i++) {
-                    writeLine("Thread3 wrote" + i);
                     try {
+                        writer.write("Thread3 wrote" + i + "\r\n");
                         Thread.sleep(20);
-                    } catch (InterruptedException e) {
+                    } catch (InterruptedException | IOException e) {
                         e.printStackTrace();
                     }
                 }
@@ -50,15 +50,6 @@ public class Task2 {
 
             writer.close();
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private synchronized static void writeLine(String text){
-        try {
-            writer.write(text);
-            writer.newLine();
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }
