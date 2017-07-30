@@ -1,5 +1,7 @@
 package ru.geekbrains.java3.lesson5;
 
+import java.util.concurrent.BrokenBarrierException;
+
 public class Car implements Runnable {
     private static int CARS_COUNT;
     static {
@@ -29,8 +31,16 @@ public class Car implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try {
+            MainClass.allReady.await();
+            // костыль, чтобы объявление прошло до старта...
+            Thread.sleep(5);
+        } catch (InterruptedException | BrokenBarrierException e) {
+            e.printStackTrace();
+        }
         for (int i = 0; i < race.getStages().size(); i++) {
             race.getStages().get(i).go(this);
         }
+        MainClass.allFinished.countDown();
     }
 }
