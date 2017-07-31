@@ -33,8 +33,6 @@ public class Car implements Runnable {
         }
         try {
             MainClass.allReady.await();
-            // костыль, чтобы объявление прошло до старта...
-            Thread.sleep(5);
         } catch (InterruptedException | BrokenBarrierException e) {
             e.printStackTrace();
         }
