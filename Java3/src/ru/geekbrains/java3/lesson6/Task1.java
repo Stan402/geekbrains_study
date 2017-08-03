@@ -15,10 +15,14 @@ public class Task1 {
     public int[] afterFour(int[] array){
         if (array == null) throw new RuntimeException();
         int last4 = -1;
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == 4) last4 = i;
+        for (int i = array.length - 1; i >= 0; i--) {
+            if (array[i] == 4) {
+                last4 = i;
+                break;
+            }
         }
         if (last4 == -1) throw new RuntimeException();
         return Arrays.copyOfRange(array, last4 + 1, array.length);
     }
 }
+

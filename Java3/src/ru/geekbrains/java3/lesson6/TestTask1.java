@@ -20,8 +20,6 @@ public class TestTask1 {
                 {new int[]{1, 2, 3, 4, 5, 6, 7, 4}, new int[]{}}
         });
     }
-
-
     private int[] array1;
     private int[] array2;
 
@@ -41,3 +39,5 @@ public class TestTask1 {
         Assert.assertArrayEquals(array2, task1.afterFour(array1));
     }
 }
+
+
