@@ -1,5 +1,7 @@
 package ru.geekbrains.java3.lesson6;
 
+import org.omg.PortableInterceptor.INACTIVE;
+
 import java.util.Arrays;
 
 public class Task1 {
