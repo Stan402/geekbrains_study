@@ -4,8 +4,8 @@ import java.sql.*;
 import java.util.Set;
 
 public class Task3 {
-    private static final String PATH = "Lesson6_task3.db";
-    Connection connection;
+    private static final String PATH = "Java3/Lesson6_task3.db";
+    static Connection connection;
 
     private static final String prepDelete = "DELETE FROM Students WHERE LastName = ? ";
     private static final String prepSelect = "SELECT Score FROM Students WHERE LastName == ?";
@@ -14,10 +14,10 @@ public class Task3 {
 
     public static void main(String[] args) {
         Task3 task3 = new Task3();
-        task3.connect();
-        //task3.initDB();
+        connect();
+        task3.initDB();
 
-        task3.disconnect();
+        disconnect();
     }
 
     void initDB() {
@@ -54,10 +54,12 @@ public class Task3 {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
     }
 
     int getScore(String name){
         int res = -1;
+
         try {
             PreparedStatement psGetScore = connection.prepareStatement(prepSelect);
             psGetScore.setString(1, name);
@@ -69,6 +71,7 @@ public class Task3 {
         return res;
     }
     void deleteStudent(String name){
+
         try {
             PreparedStatement psDelete = connection.prepareStatement(prepDelete);
             psDelete.setString(1, name);
@@ -77,7 +80,9 @@ public class Task3 {
             e.printStackTrace();
         }
     }
+
     void updateScore(String name, int score){
+
         try {
             PreparedStatement psUpdate = connection.prepareStatement(prepUpdate);
             psUpdate.setString(1, name);
@@ -88,7 +93,7 @@ public class Task3 {
         }
     }
 
-    void connect() {
+     private static void connect() {
         try {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:" + PATH);
@@ -97,7 +102,7 @@ public class Task3 {
         }
     }
 
-    void disconnect() {
+     private static void disconnect() {
         try {
             connection.close();
         } catch (SQLException e) {
