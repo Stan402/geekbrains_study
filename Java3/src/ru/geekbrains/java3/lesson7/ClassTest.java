@@ -17,7 +17,7 @@ public class ClassTest {
         System.out.println("test2 called");
     }
 
-    @Test(priority = -2)
+    @Test(priority = 1)
     static void test3() {
         System.out.println("test3 called");
     }
