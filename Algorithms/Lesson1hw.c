@@ -62,7 +62,7 @@ int findMax(int a, int b, int c){
 }
 
 
-int main(){
+int main2(){
 	int next;
 	do{
 		printf("Enter task number or 0 for exit: \n");
