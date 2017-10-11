@@ -116,6 +116,8 @@ int main2(){
 			printf("Wrong task-number %d", next);
 		}
 	} while(next != 0);
+
+	return 0;
 }
 
 

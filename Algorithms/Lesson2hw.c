@@ -63,7 +63,7 @@ int howManyPathsRec(int a, int b){
 }
 
 
-int main(){
+int main3(){
 	int next;
 	int a, b;
 		do{
