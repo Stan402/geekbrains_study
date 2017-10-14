@@ -42,7 +42,7 @@ int fillArray(int *arr){
 	return length;
 }
 
-void task1(int length, int *arr){
+void task31(int length, int *arr){
 	int arr1[MaxN];
 	int arr2[MaxN];
 	int i, j, count1, count2, temp;
@@ -169,7 +169,7 @@ int task3(int length, int *arr, int a){
 }
 
 
-int main(){
+int main33(){
 	int next;
 	int arr[MaxN];
 	int length;
@@ -180,7 +180,7 @@ int main(){
 			switch (next){
 			case 1:
 				length = fillArray(arr);
-				task1(length, arr);
+				task31(length, arr);
 				break;
 			case 2:
 				length = fillArray(arr);
