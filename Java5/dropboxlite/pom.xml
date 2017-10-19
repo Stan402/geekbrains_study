@@ -9,8 +9,8 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>dropbox_lite_server</module>
-        <module>dropbox_lite_client</module>
+        <module>dropbox_server</module>
+        <module>dropbox_client</module>
         <module>library</module>
     </modules>
 
