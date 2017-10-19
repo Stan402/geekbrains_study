@@ -116,7 +116,7 @@ void initBoard(int n, int m, int a[50][50]){
 
 }
 
-int main(){
+int main4(){
 	int next;
 	int path;
 		do{
