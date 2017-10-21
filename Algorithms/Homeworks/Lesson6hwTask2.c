@@ -13,6 +13,7 @@ typedef struct Node {
     struct Node *right;
     struct Node *parent;
 } Node;
+int searchResult;
 // Распечатка двоичного дерева в виде скобочной записи
 void printTree(Node *root) {
     if (root) {
@@ -79,6 +80,39 @@ void preOrderTravers(Node *root){
         preOrderTravers(root->right);
     }
 }
+void inOrderTravers(Node *root){
+    if (root){
+        preOrderTravers(root->left);
+        printf("%d", root->data);
+        preOrderTravers(root->right);
+    }
+}
+void postOrderTravers(Node *root){
+    if (root){
+        preOrderTravers(root->left);
+        preOrderTravers(root->right);
+        printf("%d", root->data);
+    }
+}
+
+void searchTree(Node **head, int value){
+    if(*head == NULL) return;
+
+    Node *tmp2 = NULL;
+    tmp2 = *head;
+    if (tmp2){
+        if (tmp2->data == value){
+            printf("\nFound: %5d", value);
+            searchResult = 1;
+            return;
+        } else if (tmp2->data > value){
+            searchTree(&(tmp2->left), value);
+        } else if (tmp2->data < value){
+            searchTree(&(tmp2->right), value);
+        } else puts("Something went wrong :)");
+    }
+
+}
 
 int mainLesson6Task2(){
     Node *Tree = NULL;
@@ -99,5 +133,17 @@ int mainLesson6Task2(){
     printTree(Tree);
     printf("\nPreOrderTravers:");
     preOrderTravers(Tree);
+    printf("\nInOrderTravers:");
+    inOrderTravers(Tree);
+    printf("\nPostOrderTravers:");
+    postOrderTravers(Tree);
+    puts("\nEnter number to find in the Tree: ");
+    int toFind;
+    scanf("%d", &toFind);
+    int result = toFind -1;
+    searchResult = 0;
+    searchTree(&Tree, toFind);
+    if (searchResult == 0) printf("Couldn't find value!");
+
     return 0;
 }
