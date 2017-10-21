@@ -1,0 +1,6 @@
+5
+John Doe 30 65
+Ann Smith 19 50
+Peter Stone 25 85
+Mary Reed 20 53
+Bob Pratchett 70 90
