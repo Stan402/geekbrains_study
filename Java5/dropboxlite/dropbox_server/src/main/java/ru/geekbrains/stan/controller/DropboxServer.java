@@ -63,6 +63,7 @@ public class DropboxServer implements ServerSocketThreadListener{
     }
 
     public void onExceptionServerSocketThread(ServerSocketThread serverSocketThread, Exception e) {
-
+        putLog("ServerSocketThread Exception: " + e.getMessage());
+        e.printStackTrace();
     }
 }
