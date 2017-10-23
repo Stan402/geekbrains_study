@@ -12,7 +12,6 @@ typedef struct Student{
     int weight;
 } Student;
 
-
 typedef Student T2;
 typedef struct Node {
     T2 data;

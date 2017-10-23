@@ -3,5 +3,5 @@ project(Homeworks)
 
 set(CMAKE_C_STANDARD 99)
 
-set(SOURCE_FILES main.c c-course/C10task2.c Lesson6hw.c Lesson6hwTask2.c Lesson6hwTask3.c)
+set(SOURCE_FILES main.c c-course/C10task2.c Lesson6hw.c Lesson6hwTask2.c Lesson6hwTask3.c Lesson7hw.c)
 add_executable(Homeworks ${SOURCE_FILES})
