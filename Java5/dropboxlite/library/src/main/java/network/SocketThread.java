@@ -39,5 +39,22 @@ private ObjectOutputStream out;
         }
     }
 
-    
+    public synchronized void sendMessage(AbstractMessage message){
+        try {
+            out.writeObject(message);
+            out.flush();
+        } catch (IOException e) {
+            eventListener.onExceptionSocketThread(this,socket, e);
+            close();
+        }
+    }
+
+    public void close(){
+        interrupt();
+        try {
+            socket.close();
+        } catch (IOException e) {
+            eventListener.onExceptionSocketThread(this,socket, e);
+        }
+    }
 }

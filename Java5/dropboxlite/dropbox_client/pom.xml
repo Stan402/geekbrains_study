@@ -11,5 +11,14 @@
 
     <artifactId>dropbox_client</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>ru.geekbrains.stan</groupId>
+            <artifactId>dropbox_library</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+
 
 </project>

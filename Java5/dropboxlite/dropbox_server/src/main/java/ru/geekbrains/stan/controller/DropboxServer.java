@@ -2,19 +2,26 @@ package ru.geekbrains.stan.controller;
 
 import network.ServerSocketThread;
 import network.ServerSocketThreadListener;
+import network.SocketThread;
+import network.SocketThreadListener;
+import util.AbstractMessage;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class DropboxServer implements ServerSocketThreadListener{
+public class DropboxServer implements ServerSocketThreadListener, SocketThreadListener{
 
     private ServerListener eventListener;
 
     private ServerSocketThread serverSocketThread;
+    private final CopyOnWriteArrayList<SocketThread> users = new CopyOnWriteArrayList<SocketThread>();
 
     public DropboxServer(ServerListener eventListener) {
         this.eventListener = eventListener;
     }
+
+
 
     public void startListening(int port){
         putLog("start listening...");
@@ -42,6 +49,7 @@ public class DropboxServer implements ServerSocketThreadListener{
         eventListener.onServerLog(msg);
     }
 
+    //ServerSocketThread
     public void onStartServerSocketThread(ServerSocketThread serverSocketThread) {
         putLog("started...");
     }
@@ -65,5 +73,28 @@ public class DropboxServer implements ServerSocketThreadListener{
     public void onExceptionServerSocketThread(ServerSocketThread serverSocketThread, Exception e) {
         putLog("ServerSocketThread Exception: " + e.getMessage());
         e.printStackTrace();
+    }
+
+    //SocketThread
+    public void onStartSocketThread(SocketThread socketThread) {
+        putLog("started...");
+    }
+
+    public void onStopSocketThread(SocketThread socketThread) {
+
+        putLog("SocketThread stopped...");
+    }
+
+    public void onReadySocketThread(SocketThread socketThread, Socket socket) {
+        putLog("Socket is ready");
+        users.add(socketThread);
+    }
+
+    public void onRecievedMessage(SocketThread socketThread, Socket socket, AbstractMessage message) {
+
+    }
+
+    public void onExceptionSocketThread(SocketThread socketThread, Socket socket, Exception e) {
+        putLog("Exception: " + e.getClass().getName() + ": " + e.getMessage());
     }
 }
