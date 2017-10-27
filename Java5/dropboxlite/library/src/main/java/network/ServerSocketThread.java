@@ -34,6 +34,7 @@ public class ServerSocketThread extends Thread{
                     eventListener.onTimeout(this, serverSocket);
                     continue;
                 }
+                eventListener.onSocketAccepted(this, serverSocket, socket);
             }
 
         } catch (IOException e){

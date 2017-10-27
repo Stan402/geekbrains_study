@@ -35,6 +35,7 @@ private ObjectOutputStream out;
             }
 
         }catch (IOException | ClassNotFoundException e){
+
             eventListener.onExceptionSocketThread(this, socket, e);
         }
     }

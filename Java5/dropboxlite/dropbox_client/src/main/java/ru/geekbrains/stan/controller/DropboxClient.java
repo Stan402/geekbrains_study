@@ -3,6 +3,7 @@ package ru.geekbrains.stan.controller;
 import network.SocketThread;
 import network.SocketThreadListener;
 import util.AbstractMessage;
+import util.TestMessage;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -29,6 +30,11 @@ public class DropboxClient implements SocketThreadListener{
         }
     }
 
+    private void sendMsg(){
+        AbstractMessage message = new TestMessage();
+        socketThread.sendMessage(message);
+    }
+
 
     public void onStartSocketThread(SocketThread socketThread) {
         putLog("SocketThread started...");
@@ -40,15 +46,16 @@ public class DropboxClient implements SocketThreadListener{
 
     public void onReadySocketThread(SocketThread socketThread, Socket socket) {
         putLog("Connection established...");
-        putLog("Sending test message...");
 
     }
 
     public void onRecievedMessage(SocketThread socketThread, Socket socket, AbstractMessage message) {
 
+        putLog(message.toString());
     }
 
     public void onExceptionSocketThread(SocketThread socketThread, Socket socket, Exception e) {
 
+        putLog(socketThread.getName() + " " + e.getMessage());
     }
 }

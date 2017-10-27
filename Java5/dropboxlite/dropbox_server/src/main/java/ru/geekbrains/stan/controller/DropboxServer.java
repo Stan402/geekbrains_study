@@ -5,6 +5,7 @@ import network.ServerSocketThreadListener;
 import network.SocketThread;
 import network.SocketThreadListener;
 import util.AbstractMessage;
+import util.TestMessage;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -64,6 +65,8 @@ public class DropboxServer implements ServerSocketThreadListener, SocketThreadLi
 
     public void onSocketAccepted(ServerSocketThread serverSocketThread, ServerSocket serverSocket, Socket socket) {
         putLog("User connected");
+        String threadName = "Socket thread: " + socket.getInetAddress() + ":" + socket.getPort();
+        new SocketThread(threadName, this,socket);
     }
 
     public void onStopServerSocketThread(ServerSocketThread serverSocketThread) {
@@ -91,6 +94,8 @@ public class DropboxServer implements ServerSocketThreadListener, SocketThreadLi
     }
 
     public void onRecievedMessage(SocketThread socketThread, Socket socket, AbstractMessage message) {
+        putLog("message resieved...");
+        putLog(((TestMessage)message).getTestString());
 
     }
 
