@@ -4,5 +4,6 @@ public enum MessageType {
     AUTH_REQUEST,
     AUTH_ACCEPT,
     AUTH_ERROR,
-    TEST_MESSAGE
+    TEST_MESSAGE,
+    TEXT_MESSAGE
 }

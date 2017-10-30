@@ -4,8 +4,9 @@ import network.ServerSocketThread;
 import network.ServerSocketThreadListener;
 import network.SocketThread;
 import network.SocketThreadListener;
-import util.AbstractMessage;
-import util.TestMessage;
+import ru.geekbrains.stan.entity.User;
+import ru.geekbrains.stan.service.ClientService;
+import util.*;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,9 +15,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class DropboxServer implements ServerSocketThreadListener, SocketThreadListener{
 
     private ServerListener eventListener;
+    private ClientService clientService = new ClientService();
 
     private ServerSocketThread serverSocketThread;
-    private final CopyOnWriteArrayList<SocketThread> users = new CopyOnWriteArrayList<SocketThread>();
+    private final CopyOnWriteArrayList<SocketThread> clients = new CopyOnWriteArrayList<SocketThread>();
 
     public DropboxServer(ServerListener eventListener) {
         this.eventListener = eventListener;
@@ -52,7 +54,7 @@ public class DropboxServer implements ServerSocketThreadListener, SocketThreadLi
 
     //ServerSocketThread
     public void onStartServerSocketThread(ServerSocketThread serverSocketThread) {
-        putLog("started...");
+        putLog("Server socket started...");
     }
 
     public void onReadyServerSocketThread(ServerSocketThread serverSocketThread, ServerSocket serverSocket) {
@@ -66,7 +68,7 @@ public class DropboxServer implements ServerSocketThreadListener, SocketThreadLi
     public void onSocketAccepted(ServerSocketThread serverSocketThread, ServerSocket serverSocket, Socket socket) {
         putLog("User connected");
         String threadName = "Socket thread: " + socket.getInetAddress() + ":" + socket.getPort();
-        new SocketThread(threadName, this,socket);
+        new SecuritySocketThread(threadName, this, socket);
     }
 
     public void onStopServerSocketThread(ServerSocketThread serverSocketThread) {
@@ -80,7 +82,7 @@ public class DropboxServer implements ServerSocketThreadListener, SocketThreadLi
 
     //SocketThread
     public void onStartSocketThread(SocketThread socketThread) {
-        putLog("started...");
+        putLog("New Socket thread started...");
     }
 
     public void onStopSocketThread(SocketThread socketThread) {
@@ -90,12 +92,40 @@ public class DropboxServer implements ServerSocketThreadListener, SocketThreadLi
 
     public void onReadySocketThread(SocketThread socketThread, Socket socket) {
         putLog("Socket is ready");
-        users.add(socketThread);
+        clients.add(socketThread);
     }
 
     public void onRecievedMessage(SocketThread socketThread, Socket socket, AbstractMessage message) {
         putLog("message resieved...");
+
+        SecuritySocketThread client = (SecuritySocketThread) socketThread;
+        if (client.isAuthorized())
+            handleAuthorizedClient(client, message);
+        else
+            handleNonAuthorizedClient(client, message);
+
         putLog(((TestMessage)message).getTestString());
+
+    }
+
+    private void handleNonAuthorizedClient(SecuritySocketThread client, AbstractMessage message) {
+        putLog("handling non authorizied client");
+        if (message.getType() != MessageType.AUTH_REQUEST){
+            client.sendMessage(new TextMessage("Authorize first!"));
+            return;
+        }
+        putLog("sending request to db...");
+        User user = clientService.retrieveUser(((AuthRequestMessage)message).getLogin(),
+                                                ((AuthRequestMessage)message).getPassword());
+        putLog("checking result...");
+
+        if (user == null)
+            putLog("Unknown User");
+        else
+            putLog(user.toString());
+    }
+
+    private void handleAuthorizedClient(SecuritySocketThread client, AbstractMessage message) {
 
     }
 

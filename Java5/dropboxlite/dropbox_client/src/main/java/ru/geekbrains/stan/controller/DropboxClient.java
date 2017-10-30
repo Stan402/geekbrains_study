@@ -2,8 +2,7 @@ package ru.geekbrains.stan.controller;
 
 import network.SocketThread;
 import network.SocketThreadListener;
-import util.AbstractMessage;
-import util.TestMessage;
+import util.*;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -35,6 +34,14 @@ public class DropboxClient implements SocketThreadListener{
         socketThread.sendMessage(message);
     }
 
+    private void sendMsg(AbstractMessage message){
+        socketThread.sendMessage(message);
+    }
+
+    public void disconnect(){
+        socketThread.close();
+    }
+
 
     public void onStartSocketThread(SocketThread socketThread) {
         putLog("SocketThread started...");
@@ -46,10 +53,29 @@ public class DropboxClient implements SocketThreadListener{
 
     public void onReadySocketThread(SocketThread socketThread, Socket socket) {
         putLog("Connection established...");
-
+        AuthRequestMessage message = new AuthRequestMessage("John", "JohnPass");
+        sendMsg(message);
     }
 
     public void onRecievedMessage(SocketThread socketThread, Socket socket, AbstractMessage message) {
+
+        switch (message.getType()){
+            case AUTH_ACCEPT:
+                putLog(String.format("User %s accepted!", ((AuthAcceptMessage)message).getLogin()));
+                break;
+            case AUTH_ERROR:
+                putLog("Invalid login or password. Please try again...");
+                break;
+            case TEST_MESSAGE:
+
+                putLog(((TestMessage)message).getTestString());
+                break;
+            case TEXT_MESSAGE:
+                putLog(((TextMessage)message).getMsg());
+                break;
+            default:
+                putLog("Unknown message recieved!");
+        }
 
         putLog(message.toString());
     }

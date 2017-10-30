@@ -24,18 +24,18 @@ private ObjectOutputStream out;
     public void run() {
         eventListener.onStartSocketThread(this);
         try{
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             eventListener.onReadySocketThread(this, socket);
             while (!isInterrupted()){
                 AbstractMessage message;
                 //read message
                 message = (AbstractMessage) in.readObject();
+
                 eventListener.onRecievedMessage(this, socket, message);
             }
 
         }catch (IOException | ClassNotFoundException e){
-
             eventListener.onExceptionSocketThread(this, socket, e);
         }
     }
