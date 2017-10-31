@@ -7,7 +7,7 @@ import ru.geekbrains.stan.entity.User;
 
 import java.util.List;
 
-public class ClientDAO {
+public class ServerDAO {
 
 
     public User readUser(String login, String password){
@@ -21,20 +21,28 @@ public class ClientDAO {
         // create session
         Session session = factory.getCurrentSession();
 
+        User user;
         try {
+
 
             session.beginTransaction();
 
-            List<User> users = session.createQuery("from User user where user.getLogin="
-                    + login + " and user.getPassword=" + password).getResultList();
+            System.out.println(String.format("ServerDAO: %s %s creating query...", login, password));
+            List<User> users = session.createQuery("from User u where u.login='"
+                    + login + "' and u.password='" + password + "'").getResultList();
+            if (users != null) System.out.println(users);
+
             if (users == null || users.size() != 1)
-                return null;
+                user = null;
             else
-                return users.get(0);
+                user = users.get(0);
+
+            session.getTransaction().commit();
         }
         finally {
             factory.close();
         }
+        return user;
     }
 
 }

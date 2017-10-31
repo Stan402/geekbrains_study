@@ -28,7 +28,8 @@ public class ClientGuiController implements ClientListener {
 
 
     public void onLogin(ActionEvent actionEvent){
-        String ipAddr = "192.168.0.30";
+//        String ipAddr = "192.168.0.30";
+        String ipAddr = "195.47.192.77";
         int port = 8189;
         System.out.println(loginField.getText() + " " + passField.getText());
         client.connect(ipAddr, port);

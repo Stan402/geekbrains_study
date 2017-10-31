@@ -5,7 +5,7 @@ import network.ServerSocketThreadListener;
 import network.SocketThread;
 import network.SocketThreadListener;
 import ru.geekbrains.stan.entity.User;
-import ru.geekbrains.stan.service.ClientService;
+import ru.geekbrains.stan.service.ServerService;
 import util.*;
 
 import java.net.ServerSocket;
@@ -15,7 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class DropboxServer implements ServerSocketThreadListener, SocketThreadListener{
 
     private ServerListener eventListener;
-    private ClientService clientService = new ClientService();
+    private ServerService serverService = new ServerService();
 
     private ServerSocketThread serverSocketThread;
     private final CopyOnWriteArrayList<SocketThread> clients = new CopyOnWriteArrayList<SocketThread>();
@@ -62,7 +62,7 @@ public class DropboxServer implements ServerSocketThreadListener, SocketThreadLi
     }
 
     public void onTimeout(ServerSocketThread serverSocketThread, ServerSocket serverSocket) {
-        putLog("accept timeout");
+//        putLog("accept timeout");
     }
 
     public void onSocketAccepted(ServerSocketThread serverSocketThread, ServerSocket serverSocket, Socket socket) {
@@ -115,14 +115,16 @@ public class DropboxServer implements ServerSocketThreadListener, SocketThreadLi
             return;
         }
         putLog("sending request to db...");
-        User user = clientService.retrieveUser(((AuthRequestMessage)message).getLogin(),
-                                                ((AuthRequestMessage)message).getPassword());
+        String log = ((AuthRequestMessage)message).getLogin();
+        String pass = ((AuthRequestMessage)message).getPassword();
+        putLog(String.format("Login - %s, password - %s", log, pass));
+        User user = serverService.retrieveUser(log, pass);
         putLog("checking result...");
 
         if (user == null)
             putLog("Unknown User");
         else
-            putLog(user.toString());
+            putLog("Found user:" + user.toString());
     }
 
     private void handleAuthorizedClient(SecuritySocketThread client, AbstractMessage message) {
