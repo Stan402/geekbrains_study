@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">HW1_menu</string>
+    <string name="menu_add">Add</string>
+    <string name="menu_clear">Clear</string>
+    <string name="menu_something">something</string>
+    <string name="menu_edit">Edit</string>
+    <string name="menu_delete">Delete</string>
+    <string name="button_open_popup">open popup</string>
+</resources>
