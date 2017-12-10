@@ -10,9 +10,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * Created by stan on 10/12/2017.
- */
 
 public class WeatherDataLoader {
 
@@ -27,7 +24,6 @@ public class WeatherDataLoader {
 
     static JSONObject getJSONData(Context context, String city){
         try{
-
             URL url = new URL(String.format(OPEN_API_MAP, city));
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
